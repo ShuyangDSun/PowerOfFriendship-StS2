@@ -23,6 +23,7 @@ internal class BlockForAllPatch
     [HarmonyPostfix]
     private static void Postfix(Creature creature, decimal amount, ValueProp props, CardPlay cardPlay, bool fast)
     {
+        // don't block for none players (monsters, bosses, osty, etc...) and also prevent chain reaction blocking
         if (_synchronizing || !creature.IsPlayer)
         {
             return;
@@ -32,14 +33,18 @@ internal class BlockForAllPatch
         {
             _synchronizing = true;
 
-            if (creature.CombatState?.Allies is null)
+            if (creature.CombatState?.Players is null)
             {
                 return;
             }
             
-            foreach (var ally in creature.CombatState.Allies)
+            foreach (var player in creature.CombatState.Players)
             {
-                CreatureCmd.GainBlock(ally, amount, props, cardPlay, fast);
+                // don't block if player is yourself
+                if (player.Creature != creature)
+                {
+                    CreatureCmd.GainBlock(player.Creature, amount, props, cardPlay, fast);
+                }
             }
         }
         finally
