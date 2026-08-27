@@ -8,9 +8,11 @@ namespace PowerOfFriendship.PowerOfFriendshipCode;
 public class OurHealthPatch
 {
     [HarmonyPostfix]
-    public static void Postfix(
-        RunState __result)
+    public static void Postfix(RunState __result)
     {
+        // set total players to use in other patches
+        MainFile.TotalPlayers = __result.Players.Count;
+        
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
 
         foreach (var player in __result.Players)
