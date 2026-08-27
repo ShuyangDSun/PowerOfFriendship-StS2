@@ -4,14 +4,15 @@ using MegaCrit.Sts2.Core.Runs;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode;
 
+/// <summary> Sets all player health bars equal (either combined or averaged) and sets TotalPlayers variable </summary>
 [HarmonyPatch(typeof(RunState), nameof(RunState.CreateForNewRun))]
-public class OurHealthPatch
+public class CreateNewRunPatch
 {
     [HarmonyPostfix]
     public static void Postfix(RunState __result)
     {
         // set total players to use in other patches
-        MainFile.TotalPlayers = __result.Players.Count;
+        PowerOfFriendship.TotalPlayers = __result.Players.Count;
         
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
 

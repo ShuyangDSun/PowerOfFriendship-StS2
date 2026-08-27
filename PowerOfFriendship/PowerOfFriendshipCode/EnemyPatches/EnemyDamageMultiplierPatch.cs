@@ -7,12 +7,12 @@ namespace PowerOfFriendship.PowerOfFriendshipCode;
 [HarmonyPatch(typeof(Hook), nameof(Hook.ModifyDamage))]
 public class EnemyDamageMultiplierPatch
 {
-    [HarmonyPostfix]
-    public static void Postfix(ref decimal __result, Creature? dealer)
+    [HarmonyPrefix]
+    public static void Prefix(ref decimal __result, Creature? dealer)
     {
         if (dealer is not null && dealer.IsMonster)
         {
-            __result *= MainFile.TotalPlayers;
+            __result *= PowerOfFriendship.TotalPlayers;
         }
     }
 }

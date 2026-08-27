@@ -6,7 +6,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode;
 
 //You're recommended but not required to keep all your code in this package and all your assets in the PowerOfFriendship folder.
 [ModInitializer(nameof(Initialize))]
-public partial class MainFile : Node
+public partial class PowerOfFriendship : Node
 {
     public const string
         ModId = "PowerOfFriendship"; //At the moment, this is used only for the Logger and harmony names.
