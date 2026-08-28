@@ -1,10 +1,11 @@
 using HarmonyLib;
+
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.ValueProps;
 
-namespace PowerOfFriendship.PowerOfFriendshipCode;
+namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 
 [HarmonyPatch(
@@ -18,38 +19,21 @@ namespace PowerOfFriendship.PowerOfFriendshipCode;
 ]
 internal class BlockForAllPatch
 {
-    private static bool _synchronizing;
-    
     [HarmonyPostfix]
-    private static void Postfix(Creature creature, decimal amount, ValueProp props, CardPlay cardPlay, bool fast)
+    private static void Postfix(
+        ref Task<decimal> __result,
+        Creature creature,
+        decimal amount,
+        ValueProp props,
+        CardPlay? cardPlay,
+        bool fast)
     {
-        // don't block for none players (monsters, bosses, osty, etc...) and also prevent chain reaction blocking
-        if (_synchronizing || !creature.IsPlayer)
-        {
-            return;
-        }
+        __result = PlayerSync.ApplyEffectToPlayers(__result, creature, GainBlock);
+        return;
 
-        try
+        Task<decimal> GainBlock(Creature target)
         {
-            _synchronizing = true;
-
-            if (creature.CombatState?.Players is null)
-            {
-                return;
-            }
-            
-            foreach (var player in creature.CombatState.Players)
-            {
-                // don't block if player is yourself
-                if (player.Creature != creature)
-                {
-                    CreatureCmd.GainBlock(player.Creature, amount, props, cardPlay, fast);
-                }
-            }
-        }
-        finally
-        {
-            _synchronizing = false;
+            return CreatureCmd.GainBlock(target, amount, props, cardPlay, fast);
         }
     }
 }
