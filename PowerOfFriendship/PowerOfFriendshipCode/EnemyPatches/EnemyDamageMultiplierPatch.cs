@@ -1,14 +1,15 @@
 using HarmonyLib;
+
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Hooks;
 
-namespace PowerOfFriendship.PowerOfFriendshipCode;
+namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
 
 [HarmonyPatch(typeof(Hook), nameof(Hook.ModifyDamage))]
-public class EnemyDamageMultiplierPatch
+internal class EnemyDamageMultiplierPatch
 {
     [HarmonyPrefix]
-    public static void Prefix(ref decimal __result, Creature? dealer)
+    private static void Prefix(ref decimal __result, Creature? dealer)
     {
         if (dealer is not null && dealer.IsMonster)
         {
