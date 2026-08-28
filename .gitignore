@@ -1,5 +1,19 @@
-bin/
-obj/
-/packages/
+**/bin/
+**/obj/
+**/packages/
+**/publish/
+
+# IDEs
+/.idea/
+**/.vs/
+_ReSharper.Caches/
 riderModule.iml
-/_ReSharper.Caches/
+*.DotSettings.user
+*.user
+
+# Godot
+**/.godot/
+**/android/
+
+# Local machine configuration
+**/Directory.Build.props

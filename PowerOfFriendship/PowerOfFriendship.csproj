@@ -54,7 +54,6 @@
 
     <ItemGroup>
         <None Condition="Exists('Directory.Build.props')" Include="Directory.Build.props"/>
-        <None Include=".gitignore"/>
         <None Include="PowerOfFriendship.json"/>
         <None Include="project.godot"/>
         <None Include="PowerOfFriendship/**"/>
