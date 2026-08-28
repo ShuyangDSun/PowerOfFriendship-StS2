@@ -9,13 +9,13 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
 internal class EnemyDamageMultiplierPatch
 {
     [HarmonyPrefix]
-    private static void Prefix(ref decimal damage, Creature? dealer)
+    private static void Prefix(ref decimal damage, Creature? dealer, Creature? target)
     {
-        if (dealer?.IsMonster != true)
+        if ((target?.IsPlayer ?? false )|| (target?.IsPet ?? false))
         {
-            return;
+            damage *= PowerOfFriendship.TotalPlayers;
         }
-        
-        damage *= PowerOfFriendship.TotalPlayers;
+
+        return;
     }
 }
