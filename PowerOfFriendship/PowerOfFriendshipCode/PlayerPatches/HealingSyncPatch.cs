@@ -9,11 +9,11 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 public class HealingSyncPatch
 {
     [HarmonyPostfix]
-    private static void Postfix(ref Task __result, Creature creature, Decimal amount, bool isFromCard)
+    private static void Postfix(ref Task __result, Creature creature, Decimal amount, bool playAnim)
     {
         __result = PlayerSync.ApplyEffectToPlayers(__result, creature, HealOtherPlayers);
         return;
-        
-        Task HealOtherPlayers(Creature target) => CreatureCmd.Heal(creature, amount, isFromCard);
+
+        Task HealOtherPlayers(Creature target) => CreatureCmd.Heal(creature, amount, playAnim);
     }
 }
