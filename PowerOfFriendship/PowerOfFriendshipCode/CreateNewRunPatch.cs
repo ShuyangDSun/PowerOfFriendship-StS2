@@ -14,12 +14,25 @@ internal class CreateNewRunPatch
     {
         // set total players to use in other patches
         PowerOfFriendship.TotalPlayers = __result.Players.Count;
-
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
-
         foreach (var player in __result.Players)
         {
             CreatureCmd.SetMaxAndCurrentHp(player.Creature, totalHealth);
+        }
+    }
+}
+
+[HarmonyPatch(typeof(RunState), nameof(RunState.FromSerializable))]
+internal class LoadRunPatch
+{
+    public static bool isDebug = false;
+    [HarmonyPostfix]
+    private static void Postfix(RunState __result)
+    {
+        PowerOfFriendship.TotalPlayers = __result.Players.Count;
+        if (isDebug)
+        {
+            PowerOfFriendship.TotalPlayers = 4;
         }
     }
 }

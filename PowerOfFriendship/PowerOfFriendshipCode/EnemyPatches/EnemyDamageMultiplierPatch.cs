@@ -1,5 +1,6 @@
 using HarmonyLib;
 
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Hooks;
 
@@ -9,13 +10,13 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
 internal class EnemyDamageMultiplierPatch
 {
     [HarmonyPrefix]
-    private static void Prefix(ref decimal damage, Creature? dealer)
+    private static void Prefix(ref decimal damage, Creature? dealer, Creature? target)
     {
-        if (dealer?.IsMonster != true)
+        if (((target?.IsPlayer ?? false ) || (target?.IsPet ?? false)) && (dealer?.IsMonster ?? false))
         {
-            return;
+            damage *= PowerOfFriendship.TotalPlayers;
         }
-        
-        damage *= PowerOfFriendship.TotalPlayers;
+
+        return;
     }
 }
