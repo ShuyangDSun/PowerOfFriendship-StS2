@@ -12,7 +12,7 @@ internal class EnemyDamageMultiplierPatch
     [HarmonyPrefix]
     private static void Prefix(ref decimal damage, Creature? dealer, Creature? target)
     {
-        if ((target?.IsPlayer ?? false ) || (target?.IsPet ?? false))
+        if (((target?.IsPlayer ?? false ) || (target?.IsPet ?? false)) && (dealer?.IsMonster ?? false))
         {
             damage *= PowerOfFriendship.TotalPlayers;
         }
