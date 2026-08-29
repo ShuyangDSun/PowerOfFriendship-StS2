@@ -3,7 +3,7 @@ using HarmonyLib;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 
-using PowerOfFriendship.PowerOfFriendshipCode.EventsPatches;
+using PowerOfFriendship.PowerOfFriendshipCode.EventPatches;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 

@@ -2,7 +2,7 @@ using HarmonyLib;
 
 using MegaCrit.Sts2.Core.Models;
 
-namespace PowerOfFriendship.PowerOfFriendshipCode.EventsPatches;
+namespace PowerOfFriendship.PowerOfFriendshipCode.EventPatches;
 
 [HarmonyPatch(typeof(AncientEventModel), "BeforeEventStarted", typeof(bool))]
 internal class AncientsHealingSuppressPatch
