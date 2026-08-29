@@ -22,10 +22,10 @@ internal class CreateNewRunPatch
     }
 }
 
-/*[HarmonyPatch(typeof(RunState), nameof(RunState.FromSerializable))]
+[HarmonyPatch(typeof(RunState), nameof(RunState.FromSerializable))]
 internal class LoadRunPatch
 {
-    public static bool isDebug = true;
+    public static bool isDebug = false;
     [HarmonyPostfix]
     private static void Postfix(RunState __result)
     {
@@ -35,4 +35,4 @@ internal class LoadRunPatch
             PowerOfFriendship.TotalPlayers = 4;
         }
     }
-}*/
+}
