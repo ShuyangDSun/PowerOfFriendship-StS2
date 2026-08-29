@@ -22,10 +22,9 @@ public class SummonForAllPatch
     {
         __result = PlayerSync.ApplyEffectToPlayers(__result, summoner.Creature, GainSummon);
         return;
-        async Task<SummonResult> GainSummon(Creature target)
+        Task<SummonResult> GainSummon(Creature target)
         {
-             SummonResult summonResult = await OstyCmd.Summon(choiceContext, summoner, amount, source);
-             return summonResult;
+             return OstyCmd.Summon(choiceContext, summoner, amount, source);
         }
     }
 }
