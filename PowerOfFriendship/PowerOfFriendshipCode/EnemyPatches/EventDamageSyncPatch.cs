@@ -11,11 +11,14 @@ using PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
 
 /// <summary>
-/// Combat damage (dealer.IsMonster) is already shared across players elsewhere. This patch covers the other
-/// source of HP loss: non-combat event/environmental damage, which the game always calls with a null dealer
-/// (see e.g. SlipperyBridge, TrashHeap, StoneOfAllTime) and only against the one player interacting with the
-/// event. Patching the lowest-level Damage overload means every higher-level overload (decimal or DamageVar
-/// based) funnels through here regardless of which one the event code called.
+/// Combat damage (dealer.IsMonster) is already shared across players elsewhere. This patch covers every other
+/// source of HP loss against a player:
+///  - non-combat event/environmental damage, which the game calls with a null dealer
+///    (see e.g. SlipperyBridge, TrashHeap, StoneOfAllTime)
+///  - self-damage cards/relics/potions, which pass a CardModel and resolve dealer to the casting
+///    player's own creature (see e.g. Hemokinesis: CreatureCmd.Damage(choiceContext, Owner.Creature, amount, props, this))
+/// Patching the lowest-level Damage overload means every higher-level overload (decimal, DamageVar, or
+/// CardModel based) funnels through here regardless of which one the caller used.
 /// </summary>
 [HarmonyPatch(
     typeof(CreatureCmd),
@@ -39,14 +42,15 @@ internal class EventDamageSyncPatch
         Creature? dealer,
         CardModel? cardSource)
     {
-        // Combat damage always has a dealer (the attacking monster); that path is synced separately.
-        if (dealer != null)
+        // Only skip actual monster-dealt combat damage; that path is synced separately. Everything else
+        // that damages a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
+        if (dealer is { IsMonster: true })
         {
             return;
         }
 
-        // Event damage is always dealt to exactly one creature. Bail if that assumption ever breaks
-        // rather than guessing which target to sync from.
+        // Event and self-damage sources are always dealt to exactly one creature. Bail if that
+        // assumption ever breaks rather than guessing which target to sync from.
         var target = targets.SingleOrDefault();
         if (target is not { IsPlayer: true })
         {
