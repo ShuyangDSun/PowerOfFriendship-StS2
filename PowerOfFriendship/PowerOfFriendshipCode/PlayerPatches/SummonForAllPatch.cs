@@ -18,10 +18,11 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 public class SummonForAllPatch
 {
     [HarmonyPostfix]
-    private static void Postfix(ref Task<decimal> __result, PlayerChoiceContext choiceContext, Player summoner, Decimal amount, AbstractModel? source)
+    private static void Postfix(ref Task<SummonResult> __result, PlayerChoiceContext choiceContext, Player summoner, Decimal amount, AbstractModel? source)
     {
         __result = PlayerSync.ApplyEffectToPlayers(__result, summoner.Creature, GainSummon);
         return;
+        
         Task<SummonResult> GainSummon(Creature target)
         {
              return OstyCmd.Summon(choiceContext, summoner, amount, source);
