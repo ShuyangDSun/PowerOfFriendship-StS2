@@ -6,9 +6,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
-using PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
-
-namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
+namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 /// <summary>
 /// Combat damage (dealer.IsMonster) is already shared across players elsewhere. This patch covers every other
@@ -30,7 +28,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.EnemyPatches;
     typeof(Creature),
     typeof(CardModel))
 ]
-internal class EventDamageSyncPatch
+internal class DamageSyncPatch
 {
     [HarmonyPostfix]
     private static void Postfix(
@@ -44,7 +42,7 @@ internal class EventDamageSyncPatch
     {
         // Only skip actual monster-dealt combat damage; that path is synced separately. Everything else
         // that damages a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
-        if (dealer is { IsMonster: true })
+        if (dealer?.IsMonster == true)
         {
             return;
         }
@@ -52,7 +50,7 @@ internal class EventDamageSyncPatch
         // Event and self-damage sources are always dealt to exactly one creature. Bail if that
         // assumption ever breaks rather than guessing which target to sync from.
         var target = targets.SingleOrDefault();
-        if (target is not { IsPlayer: true })
+        if (target?.IsPlayer != true)
         {
             return;
         }

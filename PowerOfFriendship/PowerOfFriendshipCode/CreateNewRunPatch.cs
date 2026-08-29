@@ -15,12 +15,10 @@ internal class CreateNewRunPatch
         // set total players to use in other patches
         PowerOfFriendship.TotalPlayers = __result.Players.Count;
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
-        var currentHp = __result.Players.Sum(player => player.Creature.CurrentHp);
-        
+
         foreach (var player in __result.Players)
         {
-            CreatureCmd.SetCurrentHp(player.Creature, currentHp);
-            CreatureCmd.SetMaxHp(player.Creature, totalHealth);
+            CreatureCmd.SetMaxHp(player.Creature, totalHealth).GetAwaiter().GetResult();
         }
     }
 }
