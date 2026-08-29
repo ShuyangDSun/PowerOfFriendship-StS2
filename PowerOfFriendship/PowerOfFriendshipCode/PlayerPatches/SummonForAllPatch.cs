@@ -25,7 +25,7 @@ public class SummonForAllPatch
         
         Task<SummonResult> GainSummon(Creature target)
         {
-             return OstyCmd.Summon(choiceContext, summoner, amount, source);
+             return OstyCmd.Summon(choiceContext, target.Player ?? summoner, amount, source);
         }
     }
 }
