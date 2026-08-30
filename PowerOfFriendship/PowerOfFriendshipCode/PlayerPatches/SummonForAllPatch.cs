@@ -2,20 +2,14 @@
 using HarmonyLib;
 
 using MegaCrit.Sts2.Core.Commands;
-using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.ValueProps;
-using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Models;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
-[HarmonyPatch(
-    typeof(OstyCmd),
-    nameof(OstyCmd.Summon))
-]
-public class SummonForAllPatch
+[HarmonyPatch(typeof(OstyCmd), nameof(OstyCmd.Summon))]
+internal class SummonForAllPatch
 {
     [HarmonyPostfix]
     private static void Postfix(ref Task<SummonResult> __result, PlayerChoiceContext choiceContext, Player summoner, Decimal amount, AbstractModel? source)
