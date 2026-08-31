@@ -16,8 +16,8 @@ internal class AncientsSuppressHealingPatch
     }
 
     [HarmonyPostfix]
-    private static void Postfix(ref Task __result)
+    private static void Postfix()
     {
-        __result = SuppressHealingClass.StopSuppressionHealingAfterAsync(__result);
+        SuppressHealingClass.StopSuppressionHealing();
     }
 }

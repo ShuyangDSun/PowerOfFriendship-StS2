@@ -41,8 +41,7 @@ internal class GainMaxHpSyncPatch
         Creature creature,
         decimal amount)
     {
-        __result = SuppressHealingClass.StopSuppressionHealingAfterAsync(
-            PlayerSync.ApplyEffectToPlayers(__result, creature, ApplyToTarget));
+        __result = PlayerSync.ApplyEffectToPlayers(__result, creature, ApplyToTarget);
         return;
 
         Task ApplyToTarget(Creature target) => CreatureCmd.GainMaxHp(target, amount);
