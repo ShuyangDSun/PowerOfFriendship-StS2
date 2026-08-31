@@ -16,10 +16,10 @@ internal class SummonForAllPatch
     {
         __result = PlayerSync.ApplyEffectToPlayers(__result, summoner.Creature, GainSummon);
         return;
-        
+
         Task<SummonResult> GainSummon(Creature target)
         {
-             return OstyCmd.Summon(choiceContext, target.Player ?? summoner, amount, source);
+            return OstyCmd.Summon(choiceContext, target.Player ?? summoner, amount, source);
         }
     }
 }

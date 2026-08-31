@@ -8,7 +8,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.EventPatches;
 internal class AncientsHealingSuppressPatch
 {
     internal static bool SuppressHealing;
-    
+
     [HarmonyPrefix]
     private static void Prefix(out bool __state)
     {

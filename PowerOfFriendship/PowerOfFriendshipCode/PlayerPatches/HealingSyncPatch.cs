@@ -17,10 +17,10 @@ public class HealingSyncPatch
         {
             return;
         }
-        
+
         __result = PlayerSync.ApplyEffectToPlayers(__result, creature, HealOtherPlayers);
         return;
-        
+
         Task HealOtherPlayers(Creature target) => CreatureCmd.Heal(target, amount, playAnim);
     }
 }
