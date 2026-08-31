@@ -4,6 +4,7 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 
 using PowerOfFriendship.PowerOfFriendshipCode.EventPatches;
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
@@ -13,7 +14,7 @@ public class HealingSyncPatch
     [HarmonyPostfix]
     private static void Postfix(ref Task __result, Creature creature, Decimal amount, bool playAnim)
     {
-        if (AncientsHealingSuppressPatch.SuppressHealing)
+        if (SuppressHealingClass.SuppressHealing)
         {
             return;
         }

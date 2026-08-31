@@ -6,6 +6,8 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
+
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 /// <summary>

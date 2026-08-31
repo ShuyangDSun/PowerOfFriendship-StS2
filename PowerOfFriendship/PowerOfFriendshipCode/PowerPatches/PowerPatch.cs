@@ -7,6 +7,7 @@ using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
 using PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
 
