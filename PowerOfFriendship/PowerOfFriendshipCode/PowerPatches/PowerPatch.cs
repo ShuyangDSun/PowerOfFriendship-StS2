@@ -111,7 +111,6 @@ internal static class PowerPatch
         typeof(StrengthPower),
         typeof(VigorPower),
         typeof(RitualPower),
-        typeof(SandpitPower)
     ];
     private static readonly HashSet<Type> PlayerToPlayer = [
         typeof(DoomPower),
@@ -129,7 +128,6 @@ internal static class PowerPatch
         // typeof(CrabRagePower),
         // typeof(EnragePower),
         // typeof(PainfulStabsPower),
-        // typeof(SandpitPower)
     ];
     private static readonly HashSet<Type> ShouldBeShared = [
         // typeof(NeurosurgePower),
@@ -142,7 +140,6 @@ internal static class PowerPatch
         typeof(BlurPower),
         typeof(TaintedPower),
         // typeof(DisintegrationPower),
-        // typeof(SandpitPower)
     ];
 
     internal static void Prefix(
@@ -153,8 +150,13 @@ internal static class PowerPatch
         CardModel? cardSource)
     {
         // if powerType is SandpitPower, handle differently
-        if (power is SandpitPower && cardSource is null)
+        if (power is SandpitPower)
         {
+            // only n times when The Insatiable first applies the power or decrements after each turn
+            if (cardSource is not null)
+            {
+                return;
+            }
             amount *= PowerOfFriendship.TotalPlayers;
             return;
         }
@@ -183,6 +185,23 @@ internal static class PowerPatch
         CardModel? cardSource,
         bool silent = false)
     {
+        // if powerType is SandpitPower, handle differently
+        if (power is SandpitPower)
+        {
+            // only share among everyone after playing from FranticEscape
+            if (power.Target is null || cardSource is null || SuppressSharing.SuppressPower)
+            {
+                PowerOfFriendship.Logger.Info("CURRENTLY SUPPRESSING POWER");
+                return;
+            }
+                
+            PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
+            __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
+                GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
+            return;
+        }
+        
+        // All other powers
         Type powerType = power.GetType();
 
         if (!ShouldModifyPower(powerType, target, applier, cardSource))
@@ -192,27 +211,8 @@ internal static class PowerPatch
 
         if (ShouldBeShared.Contains(powerType) && !SuppressSharing.SuppressPower)
         {
-            // if powerType is SandpitPower, handle differently
-            // if (power is SandpitPower && applier?.IsPlayer == true)
-            // {
-            //     __result = PlayerSync.ApplyEffectToPlayers(__result, applier, ApplySandPitPowerForOthersFunction);
-            //     return;
-            // }
-            
-            __result = PlayerSync.ApplyEffectToPlayers(__result, target, ApplyToOtherPlayersFunction);
-        }
-
-        return;
-
-        Task ApplyToOtherPlayersFunction(Creature player) =>
-            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
-
-        Task ApplySandPitPowerForOthersFunction(Creature player)
-        {
-            Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
-            return theInsatiable is null ? 
-                Task.CompletedTask :
-                PowerCmd.Apply(choiceContext, power, target, amount, applier, cardSource);
+            __result = PlayerSync.ApplyEffectToPlayers(__result, target,
+                GetApplyToOtherPlayersFunction(choiceContext, power, amount, applier, cardSource, silent));
         }
     }
     internal static void Postfix<T>(
@@ -225,6 +225,23 @@ internal static class PowerPatch
         CardModel? cardSource,
         bool silent = false)
     {
+        // if powerType is SandpitPower, handle differently
+        if (power is SandpitPower)
+        {
+            // only share among everyone after playing from FranticEscape
+            if (power.Target is null || cardSource is null || SuppressSharing.SuppressPower)
+            {
+                PowerOfFriendship.Logger.Info("CURRENTLY SUPPRESSING POWER");
+                return;
+            }
+                
+            PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
+            __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
+                GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
+            return;
+        }
+        
+        // All other powers
         Type powerType = power.GetType();
 
         if (!ShouldModifyPower(powerType, target, applier, cardSource))
@@ -234,30 +251,8 @@ internal static class PowerPatch
 
         if (ShouldBeShared.Contains(powerType) && !SuppressSharing.SuppressPower)
         {
-            // if powerType is SandpitPower, handle differently
-            // if (power is SandpitPower && applier?.IsPlayer == true)
-            // {
-            //     PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
-            //     __result = PlayerSync.ApplyEffectToPlayers(__result, applier, ApplySandPitPowerForOthersFunction);
-            //     return;
-            // }
-            
-            __result = PlayerSync.ApplyEffectToPlayers(__result, target, ApplyToOtherPlayersFunction);
-        }
-
-        return;
-
-        Task ApplyToOtherPlayersFunction(Creature player) =>
-            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
-        
-        Task ApplySandPitPowerForOthersFunction(Creature player)
-        {
-            Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
-            PowerOfFriendship.Logger.Info("SHARING SANDPIT POWER");
-            PowerOfFriendship.Logger.Info((theInsatiable is null).ToString());
-            return theInsatiable is null ?
-                Task.CompletedTask :
-                PowerCmd.Apply(choiceContext, power, target, amount, applier, cardSource);
+            __result = PlayerSync.ApplyEffectToPlayers(__result, target,
+                GetApplyToOtherPlayersFunction(choiceContext, power, amount, applier, cardSource, silent));
         }
     }
 
@@ -298,5 +293,49 @@ internal static class PowerPatch
         }
 
         return true;
+    }
+
+    private static Func<Creature, Task> GetApplyToOtherPlayersFunction(
+        PlayerChoiceContext choiceContext,
+        PowerModel power,
+        decimal amount,
+        Creature? applier,
+        CardModel? cardSource,
+        bool silent)
+    {
+        return ApplyToOtherPlayersFunction;
+        
+        Task ApplyToOtherPlayersFunction(Creature player) =>
+            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
+    }
+    
+    private static Func<Creature, Task> GetApplySandPitPowerForOthersFunction(
+        PlayerChoiceContext choiceContext,
+        decimal amount,
+        Creature? applier,
+        CardModel? cardSource,
+        bool silent)
+    {
+        return ApplySandPitPowerForOthersFunction;
+        
+        Task ApplySandPitPowerForOthersFunction(Creature player)
+        {
+            Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
+            if (theInsatiable is null)
+            {
+                return Task.CompletedTask;
+            }
+            
+            PowerOfFriendship.Logger.Info("INSATIABLE SANDPIT POWERS");
+            PowerOfFriendship.Logger.Info(theInsatiable.Powers.Count.ToString());
+            PowerModel? playerSandPitPower = theInsatiable.Powers
+                .OfType<SandpitPower>()
+                .FirstOrDefault(power => power.Target == player);
+            
+            // Sandpit power has to use ModifyAmount except for first 
+            return playerSandPitPower is null ?
+                Task.CompletedTask :
+                PowerCmd.ModifyAmount(choiceContext, playerSandPitPower, amount, applier, cardSource, silent);
+        }
     }
 }
