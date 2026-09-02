@@ -160,7 +160,7 @@ internal static class PowerPatch
             amount *= PowerOfFriendship.TotalPlayers;
             return;
         }
-        
+
         // All other powers
         Type powerType = power.GetType();
 
@@ -193,12 +193,12 @@ internal static class PowerPatch
             {
                 return;
             }
-                
+
             __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
                 GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
             return;
         }
-        
+
         // All other powers
         Type powerType = power.GetType();
 
@@ -231,12 +231,12 @@ internal static class PowerPatch
             {
                 return;
             }
-                
+
             __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
                 GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
             return;
         }
-        
+
         // All other powers
         Type powerType = power.GetType();
 
@@ -300,11 +300,11 @@ internal static class PowerPatch
         bool silent)
     {
         return ApplyToOtherPlayersFunction;
-        
+
         Task ApplyToOtherPlayersFunction(Creature player) =>
-            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
+            PowerCmd.Apply(choiceContext, (PowerModel)power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
     }
-    
+
     private static Func<Creature, Task> GetApplySandPitPowerForOthersFunction(
         PlayerChoiceContext choiceContext,
         decimal amount,
@@ -313,7 +313,7 @@ internal static class PowerPatch
         bool silent)
     {
         return ApplySandPitPowerForOthersFunction;
-        
+
         Task ApplySandPitPowerForOthersFunction(Creature player)
         {
             Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
@@ -321,11 +321,11 @@ internal static class PowerPatch
             {
                 return Task.CompletedTask;
             }
-            
+
             PowerModel? playerSandPitPower = theInsatiable.Powers
                 .OfType<SandpitPower>()
                 .FirstOrDefault(power => power.Target == player);
-            
+
             // Sandpit power has to use ModifyAmount except for first 
             return playerSandPitPower is null ?
                 Task.CompletedTask :

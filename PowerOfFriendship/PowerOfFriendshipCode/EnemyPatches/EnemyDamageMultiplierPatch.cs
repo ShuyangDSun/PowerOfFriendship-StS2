@@ -18,7 +18,7 @@ internal class EnemyDamageMultiplierPatch
         {
             return;
         }
-        
+
         if ((target?.IsPlayer == true || target?.IsPet == true) && dealer?.IsMonster == true)
         {
             damage *= PowerOfFriendship.TotalPlayers;
