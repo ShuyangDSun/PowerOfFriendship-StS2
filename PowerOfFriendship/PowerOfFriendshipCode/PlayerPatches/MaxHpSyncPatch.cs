@@ -32,7 +32,7 @@ internal class GainMaxHpSyncPatch
     [HarmonyPrefix]
     private static void Prefix()
     {
-        SuppressHealingClass.StartSuppressionHealing();
+        SuppressSharing.StartSuppressingHealing();
     }
 
     [HarmonyPostfix]

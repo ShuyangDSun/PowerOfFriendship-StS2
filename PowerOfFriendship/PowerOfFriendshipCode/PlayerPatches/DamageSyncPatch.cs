@@ -51,7 +51,8 @@ internal class DamageSyncPatch
 
         // Event and self-damage sources are always dealt to exactly one creature. Bail if that
         // assumption ever breaks rather than guessing which target to sync from.
-        var target = targets.SingleOrDefault();
+        var targetList = targets.Take(2).ToList();
+        var target = targetList.Count == 1 ? targetList.First() : null;
         if (target?.IsPlayer != true)
         {
             return;
@@ -62,7 +63,7 @@ internal class DamageSyncPatch
 
         Task<IEnumerable<DamageResult>> ApplyDamage(Creature otherTarget)
         {
-            return CreatureCmd.Damage(choiceContext, otherTarget, amount, props, dealer, cardSource);
+            return CreatureCmd.Damage(choiceContext, otherTarget, amount, props, null, cardSource);
         }
     }
 }

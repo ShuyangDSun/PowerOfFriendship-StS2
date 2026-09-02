@@ -14,7 +14,7 @@ public class HealingSyncPatch
     [HarmonyPostfix]
     private static void Postfix(ref Task __result, Creature creature, Decimal amount, bool playAnim)
     {
-        if (SuppressHealingClass.SuppressHealing)
+        if (SuppressSharing.SuppressHealing)
         {
             return;
         }

@@ -6,7 +6,6 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Models.Powers;
 
-using PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 using PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
@@ -18,6 +17,9 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
  * So we must patch both Apply and ModifyAmount
  * However since Apply(PowerModel, target) can also call ModifyAmount, we want to check for the case where
  * Apply(PowerModel, target) calls ModifyAmount and avoid doing anything if that is the case.
+ *
+ * Note: SandpitPower logic is a bit weird since the owner of the power is The Insatiable however The Insatiable
+ *  also has its own count of the SandpitPower for each player
  */
 
 [HarmonyPatch(
@@ -108,7 +110,8 @@ internal static class PowerPatch
     private static readonly HashSet<Type> EnemyToEnemy = [
         typeof(StrengthPower),
         typeof(VigorPower),
-        typeof(RitualPower)
+        typeof(RitualPower),
+        typeof(SandpitPower)
     ];
     private static readonly HashSet<Type> PlayerToPlayer = [
         typeof(DoomPower),
@@ -120,13 +123,13 @@ internal static class PowerPatch
         typeof(StrengthPower),
         typeof(VigorPower),
         // typeof(RitualPower),
-        typeof(SuckPower),
+        // typeof(SuckPower),
         typeof(TerritorialPower),
         typeof(SteamEruptionPower),
         // typeof(CrabRagePower),
-        typeof(DisintegrationPower),
-        typeof(EnragePower),
-        // typeof(PainfulStabsPower)
+        // typeof(EnragePower),
+        // typeof(PainfulStabsPower),
+        // typeof(SandpitPower)
     ];
     private static readonly HashSet<Type> ShouldBeShared = [
         // typeof(NeurosurgePower),
@@ -138,7 +141,8 @@ internal static class PowerPatch
         typeof(IntangiblePower),
         typeof(BlurPower),
         typeof(TaintedPower),
-        // typeof(SandpitPower),
+        // typeof(DisintegrationPower),
+        // typeof(SandpitPower)
     ];
 
     internal static void Prefix(
@@ -148,6 +152,14 @@ internal static class PowerPatch
         Creature? applier,
         CardModel? cardSource)
     {
+        // if powerType is SandpitPower, handle differently
+        if (power is SandpitPower && cardSource is null)
+        {
+            amount *= PowerOfFriendship.TotalPlayers;
+            return;
+        }
+        
+        // All other powers
         Type powerType = power.GetType();
 
         if (!ShouldModifyPower(powerType, target, applier, cardSource))
@@ -178,15 +190,30 @@ internal static class PowerPatch
             return;
         }
 
-        if (ShouldBeShared.Contains(powerType))
+        if (ShouldBeShared.Contains(powerType) && !SuppressSharing.SuppressPower)
         {
+            // if powerType is SandpitPower, handle differently
+            // if (power is SandpitPower && applier?.IsPlayer == true)
+            // {
+            //     __result = PlayerSync.ApplyEffectToPlayers(__result, applier, ApplySandPitPowerForOthersFunction);
+            //     return;
+            // }
+            
             __result = PlayerSync.ApplyEffectToPlayers(__result, target, ApplyToOtherPlayersFunction);
         }
 
         return;
 
         Task ApplyToOtherPlayersFunction(Creature player) =>
-            PowerCmd.Apply(choiceContext, power, player, amount, applier, cardSource, silent);
+            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
+
+        Task ApplySandPitPowerForOthersFunction(Creature player)
+        {
+            Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
+            return theInsatiable is null ? 
+                Task.CompletedTask :
+                PowerCmd.Apply(choiceContext, power, target, amount, applier, cardSource);
+        }
     }
     internal static void Postfix<T>(
         ref Task<T?> __result,
@@ -205,15 +232,33 @@ internal static class PowerPatch
             return;
         }
 
-        if (ShouldBeShared.Contains(powerType))
+        if (ShouldBeShared.Contains(powerType) && !SuppressSharing.SuppressPower)
         {
+            // if powerType is SandpitPower, handle differently
+            // if (power is SandpitPower && applier?.IsPlayer == true)
+            // {
+            //     PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
+            //     __result = PlayerSync.ApplyEffectToPlayers(__result, applier, ApplySandPitPowerForOthersFunction);
+            //     return;
+            // }
+            
             __result = PlayerSync.ApplyEffectToPlayers(__result, target, ApplyToOtherPlayersFunction);
         }
 
         return;
 
         Task ApplyToOtherPlayersFunction(Creature player) =>
-            PowerCmd.Apply(choiceContext, power, player, amount, applier, cardSource, silent);
+            PowerCmd.Apply(choiceContext, (PowerModel) power.ClonePreservingMutability(), player, amount, applier, cardSource, silent);
+        
+        Task ApplySandPitPowerForOthersFunction(Creature player)
+        {
+            Creature? theInsatiable = player.CombatState?.Enemies.FirstOrDefault(c => c.HasPower<SandpitPower>());
+            PowerOfFriendship.Logger.Info("SHARING SANDPIT POWER");
+            PowerOfFriendship.Logger.Info((theInsatiable is null).ToString());
+            return theInsatiable is null ?
+                Task.CompletedTask :
+                PowerCmd.Apply(choiceContext, power, target, amount, applier, cardSource);
+        }
     }
 
     private static bool ShouldModifyPower(

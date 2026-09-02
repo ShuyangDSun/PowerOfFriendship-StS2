@@ -12,12 +12,12 @@ internal class AncientsSuppressHealingPatch
     [HarmonyPrefix]
     private static void Prefix()
     {
-        SuppressHealingClass.StartSuppressionHealing();
+        SuppressSharing.StartSuppressingHealing();
     }
 
     [HarmonyPostfix]
     private static void Postfix()
     {
-        SuppressHealingClass.StopSuppressionHealing();
+        SuppressSharing.StopSuppressingHealing();
     }
 }
