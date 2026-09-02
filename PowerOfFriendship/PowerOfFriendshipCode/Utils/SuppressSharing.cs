@@ -4,8 +4,8 @@ internal class SuppressSharing
 {
     private static readonly AsyncLocal<int> SuppressHealingDepth = new();
     private static readonly AsyncLocal<int> SuppressPowerDepth = new();
-    internal static bool SuppressHealing { get { return SuppressHealingDepth.Value > 0; } }
-    internal static bool SuppressPower { get { return SuppressPowerDepth.Value > 0; } }
+    internal static bool SuppressHealing => SuppressHealingDepth.Value > 0;
+    internal static bool SuppressPower => SuppressPowerDepth.Value > 0;
     internal static void StartSuppressingHealing() => SuppressHealingDepth.Value++;
     internal static void StartSuppressingPower() => SuppressPowerDepth.Value++;
     internal static void StopSuppressingHealing() =>

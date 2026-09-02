@@ -6,6 +6,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
 using PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
@@ -42,9 +43,10 @@ internal class DamageSyncPatch
         Creature? dealer,
         CardModel? cardSource)
     {
-        // Only skip actual monster-dealt combat damage; that path is synced separately. Everything else
-        // that damages a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
-        if (dealer?.IsMonster == true)
+        // Skip monster-dealt combat damage; that path is synced separately. Everything else that damages
+        // a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
+        //      Note: Thorns damage has enemy as dealer and player as target but should be shared
+        if (dealer?.IsMonster == true && !ThornsPowerPatch.ResolvingThornsDamage)
         {
             return;
         }

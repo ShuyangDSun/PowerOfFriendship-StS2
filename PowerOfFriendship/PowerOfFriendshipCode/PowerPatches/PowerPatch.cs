@@ -18,7 +18,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
  * However since Apply(PowerModel, target) can also call ModifyAmount, we want to check for the case where
  * Apply(PowerModel, target) calls ModifyAmount and avoid doing anything if that is the case.
  *
- * Note: SandpitPower logic is a bit weird since the owner of the power is The Insatiable however The Insatiable
+ * Note: SandpitPower logic is a bit weird since the owner of the power is The Insatiable and The Insatiable
  *  also has its own count of the SandpitPower for each player
  */
 
@@ -191,11 +191,9 @@ internal static class PowerPatch
             // only share among everyone after playing from FranticEscape
             if (power.Target is null || cardSource is null || SuppressSharing.SuppressPower)
             {
-                PowerOfFriendship.Logger.Info("CURRENTLY SUPPRESSING POWER");
                 return;
             }
                 
-            PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
             __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
                 GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
             return;
@@ -231,11 +229,9 @@ internal static class PowerPatch
             // only share among everyone after playing from FranticEscape
             if (power.Target is null || cardSource is null || SuppressSharing.SuppressPower)
             {
-                PowerOfFriendship.Logger.Info("CURRENTLY SUPPRESSING POWER");
                 return;
             }
                 
-            PowerOfFriendship.Logger.Info("HANDLING SHARING SANDPIT POWER");
             __result = PlayerSync.ApplyEffectToPlayers(__result, power.Target,
                 GetApplySandPitPowerForOthersFunction(choiceContext, amount, applier, cardSource, silent));
             return;
@@ -326,8 +322,6 @@ internal static class PowerPatch
                 return Task.CompletedTask;
             }
             
-            PowerOfFriendship.Logger.Info("INSATIABLE SANDPIT POWERS");
-            PowerOfFriendship.Logger.Info(theInsatiable.Powers.Count.ToString());
             PowerModel? playerSandPitPower = theInsatiable.Powers
                 .OfType<SandpitPower>()
                 .FirstOrDefault(power => power.Target == player);
