@@ -1,4 +1,3 @@
-
 using HarmonyLib;
 
 using MegaCrit.Sts2.Core.Commands;
@@ -6,6 +5,8 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
+
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 [HarmonyPatch(typeof(OstyCmd), nameof(OstyCmd.Summon))]
@@ -16,10 +17,10 @@ internal class SummonForAllPatch
     {
         __result = PlayerSync.ApplyEffectToPlayers(__result, summoner.Creature, GainSummon);
         return;
-        
+
         Task<SummonResult> GainSummon(Creature target)
         {
-             return OstyCmd.Summon(choiceContext, target.Player ?? summoner, amount, source);
+            return OstyCmd.Summon(choiceContext, target.Player ?? summoner, amount, source);
         }
     }
 }

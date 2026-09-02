@@ -1,6 +1,6 @@
 using MegaCrit.Sts2.Core.Entities.Creatures;
 
-namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
+namespace PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
 /*
  * PlayerSync
@@ -21,7 +21,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 internal static class PlayerSync
 {
-    private static readonly AsyncLocal<bool> Synchronizing = new AsyncLocal<bool>();
+    private static readonly AsyncLocal<bool> Synchronizing = new();
 
     internal static async Task ApplyEffectToPlayers(Task originalCommand, Creature target, Func<Creature, Task> applyToTarget)
     {

@@ -4,6 +4,8 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
+
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 [HarmonyPatch(typeof(CreatureCmd), nameof(CreatureCmd.LoseMaxHp))]
@@ -27,6 +29,12 @@ internal class LoseMaxHpSyncPatch
 [HarmonyPatch(typeof(CreatureCmd), nameof(CreatureCmd.GainMaxHp))]
 internal class GainMaxHpSyncPatch
 {
+    [HarmonyPrefix]
+    private static void Prefix()
+    {
+        SuppressSharing.StartSuppressingHealing();
+    }
+
     [HarmonyPostfix]
     private static void Postfix(
         ref Task __result,

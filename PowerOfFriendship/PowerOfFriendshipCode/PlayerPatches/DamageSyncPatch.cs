@@ -6,6 +6,9 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using PowerOfFriendship.PowerOfFriendshipCode.PowerPatches;
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
+
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 /// <summary>
@@ -40,16 +43,18 @@ internal class DamageSyncPatch
         Creature? dealer,
         CardModel? cardSource)
     {
-        // Only skip actual monster-dealt combat damage; that path is synced separately. Everything else
-        // that damages a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
-        if (dealer?.IsMonster == true)
+        // Skip monster-dealt combat damage; that path is synced separately. Everything else that damages
+        // a player - a null dealer (events) or a player dealer (self-damage) or relic damage - is synced here.
+        //      Note: Thorns damage has enemy as dealer and player as target but should be shared
+        if (dealer?.IsMonster == true && !ThornsPowerPatch.ResolvingThornsDamage)
         {
             return;
         }
 
         // Event and self-damage sources are always dealt to exactly one creature. Bail if that
         // assumption ever breaks rather than guessing which target to sync from.
-        var target = targets.SingleOrDefault();
+        var targetList = targets.Take(2).ToList();
+        var target = targetList.Count == 1 ? targetList.First() : null;
         if (target?.IsPlayer != true)
         {
             return;
@@ -60,7 +65,7 @@ internal class DamageSyncPatch
 
         Task<IEnumerable<DamageResult>> ApplyDamage(Creature otherTarget)
         {
-            return CreatureCmd.Damage(choiceContext, otherTarget, amount, props, dealer, cardSource);
+            return CreatureCmd.Damage(choiceContext, otherTarget, amount, props, null, cardSource);
         }
     }
 }

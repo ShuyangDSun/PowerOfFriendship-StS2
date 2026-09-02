@@ -5,6 +5,8 @@ using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.ValueProps;
 
+using PowerOfFriendship.PowerOfFriendshipCode.Utils;
+
 namespace PowerOfFriendship.PowerOfFriendshipCode.PlayerPatches;
 
 
