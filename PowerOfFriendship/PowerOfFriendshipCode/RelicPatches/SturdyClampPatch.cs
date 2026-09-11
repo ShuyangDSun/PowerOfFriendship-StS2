@@ -30,7 +30,7 @@ internal static class SturdyClampPatch
     {
         if (__instance != preventer || !creature.IsPlayer)
             return true;
-        
+
         __result = PreventBlock(__instance, creature);
         return false;
     }

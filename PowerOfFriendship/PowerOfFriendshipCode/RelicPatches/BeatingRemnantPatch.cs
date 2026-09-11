@@ -20,12 +20,12 @@ internal static class BeatingRemnantPatch
         {
             return true;
         }
-        
+
         // get private variable
         var damageReceivedThisTurn = Traverse.Create(__instance)
             .Property("DamageReceivedThisTurn")
             .GetValue<decimal>();
-        
+
         __result = !CombatManager.Instance.IsInProgress
             ? amount
             : Math.Min(amount, __instance.DynamicVars["MaxHpLoss"].BaseValue * PowerOfFriendship.TotalPlayers - damageReceivedThisTurn);

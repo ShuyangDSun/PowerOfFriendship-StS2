@@ -138,7 +138,7 @@ internal static class PowerPatch
         typeof(BlurPower),
         typeof(TaintedPower),
         typeof(DiamondDiademPower),
-        
+
         typeof(NoBlockPower),
         typeof(TheGambitPower),
         typeof(WraithFormPower),

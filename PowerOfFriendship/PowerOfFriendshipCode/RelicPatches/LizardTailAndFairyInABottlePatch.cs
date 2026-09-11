@@ -42,7 +42,7 @@ internal static class PartyRevive
     private static LizardTail? s_tail;
     private static bool s_bottleTriggered;
     private static bool s_tailTriggered;
-    
+
     [HarmonyPatch(
         typeof(CreatureCmd),
         nameof(CreatureCmd.Damage),
@@ -60,7 +60,7 @@ internal static class PartyRevive
             out bool __state)
         {
             __state = false;
-            
+
             // if s_tail is not null, then this is a nested call. So don't do anything.
             if (s_bottle is not null || s_tail is not null)
             {
@@ -73,14 +73,14 @@ internal static class PartyRevive
                 return;
             }
 
-            var bottle = 
+            var bottle =
                 players
                     .SelectMany(player => player.Potions)
                     .OfType<FairyInABottle>()
                     .FirstOrDefault();
-            
+
             var tail = PartyRelics.GetRelic<LizardTail>();
-            
+
             if (bottle is null && tail is null)
             {
                 return;
@@ -116,7 +116,7 @@ internal static class PartyRevive
                     s_bottleTriggered = false;
                     s_bottle.RemoveBeforeUse();
                 }
-                
+
                 if (s_tailTriggered && s_tail is not null)
                 {
                     s_tail.WasUsed = true;
@@ -129,7 +129,7 @@ internal static class PartyRevive
             }
         }
     }
-    
+
     // ------------------------- FairyInABottle -------------------------
     [HarmonyPatch(typeof(PotionModel), nameof(PotionModel.RemoveBeforeUse))]
     private static class PotionModelPatch
@@ -154,24 +154,24 @@ internal static class PartyRevive
             {
                 return true;
             }
-            
+
             // Prevents a second FairyInABottle from being used
             __result = __instance != s_bottle;
             return false;
         }
-        
+
         [HarmonyPatch(nameof(FairyInABottle.AfterPreventingDeath))]
         [HarmonyPrefix]
         private static void AfterPreventingDeathPrefix()
         {
             SuppressSharing.StartSuppressingHealing();
-            
+
             if (!s_bottleTriggered)
             {
                 s_bottleTriggered = true;
             }
         }
-        
+
         [HarmonyPatch(nameof(FairyInABottle.AfterPreventingDeath))]
         [HarmonyPostfix]
         private static void AfterPreventingDeathPostfix()
@@ -194,30 +194,30 @@ internal static class PartyRevive
                 __result = true;
                 return false;
             }
-            
+
             // if no tail is found
             if (s_tail is null)
             {
                 return true;
             }
-            
+
             // Prevents a second LizardTail from being used
             __result = __instance != s_tail || __instance.WasUsed;
             return false;
         }
-        
+
         [HarmonyPatch(nameof(LizardTail.AfterPreventingDeath))]
         [HarmonyPrefix]
         private static void AfterPreventingDeathPrefix()
         {
             SuppressSharing.StartSuppressingHealing();
-            
+
             if (!s_tailTriggered)
             {
                 s_tailTriggered = true;
             }
         }
-        
+
         [HarmonyPatch(nameof(LizardTail.AfterPreventingDeath))]
         [HarmonyPostfix]
         private static void AfterPreventingDeathPostfix(LizardTail __instance)

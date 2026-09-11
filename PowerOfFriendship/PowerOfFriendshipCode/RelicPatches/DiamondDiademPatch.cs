@@ -23,13 +23,13 @@ internal static class DiamondDiademPatch
             __result = Task.CompletedTask;
             return false;
         }
-        
+
         ++__instance.CardsPlayedThisTurn;
-        
+
         // run private function
         AccessTools.Method(typeof(DiamondDiadem), "RefreshCounter")
             .Invoke(__instance, null);
-        
+
         __result = Task.CompletedTask;
         return false;
     }
@@ -55,16 +55,16 @@ internal static class DiamondDiademPatch
         {
             return;
         }
-        
+
         if (diamondDiadem.CardsPlayedThisTurn <= diamondDiadem.DynamicVars["CardThreshold"].BaseValue * PowerOfFriendship.TotalPlayers)
         {
             diamondDiadem.Flash();
-            
+
             // applying power to all is handled in PowerPatch
             await PowerCmd.Apply<DiamondDiademPower>(choiceContext, diamondDiadem.Owner.Creature, 1M, diamondDiadem.Owner.Creature, null);
         }
         diamondDiadem.CardsPlayedThisTurn = 0;
-        
+
         // run private function
         AccessTools.Method(typeof(DiamondDiadem), "RefreshCounter")
             .Invoke(diamondDiadem, null);

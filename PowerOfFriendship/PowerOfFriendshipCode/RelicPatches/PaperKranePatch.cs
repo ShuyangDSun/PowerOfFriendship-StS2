@@ -52,9 +52,9 @@ internal static class WeakPowerPatch
         {
             return;
         }
-        
+
         decimal amount1 = __instance.DynamicVars["DamageDecrease"].BaseValue;
-        
+
         PaperKrane? relic = PartyRelics.GetRelic<PaperKrane>();
         if (relic != null)
             __result = relic.ModifyWeakMultiplier(target, amount1, props, dealer, cardSource);

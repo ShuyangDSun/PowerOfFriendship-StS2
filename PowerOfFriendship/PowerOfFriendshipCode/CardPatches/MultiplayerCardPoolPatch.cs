@@ -18,7 +18,7 @@ internal static class MultiplayerCardPoolPatch
         // Necrobinder
         typeof(LegionOfBone),
     ];
-    
+
     [HarmonyPostfix]
     private static void Postfix(ref IEnumerable<CardModel> __result, CardMultiplayerConstraint multiplayerConstraint)
     {

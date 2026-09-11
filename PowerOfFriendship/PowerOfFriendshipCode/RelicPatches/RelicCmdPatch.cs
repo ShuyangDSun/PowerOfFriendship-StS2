@@ -18,14 +18,14 @@ internal static class RelicObtainPatch
     {
         PartyRelics.Add(relic);
     }
-    
+
     [HarmonyPatch(nameof(RelicCmd.Remove))]
     [HarmonyPostfix]
     private static void RemovePostfix(RelicModel relic)
     {
         PartyRelics.Remove(relic);
     }
-    
+
     [HarmonyPatch(nameof(RelicCmd.Melt))]
     [HarmonyPostfix]
     private static void MeltPostfix(RelicModel relic)

@@ -19,9 +19,10 @@ internal class CreateNewRunPatch
         PowerOfFriendship.Players = __result.Players;
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
 
+        var maxHealth = ModConfig.AverageHealthBar ? totalHealth / __result.Players.Count : totalHealth;
         foreach (var player in __result.Players)
         {
-            CreatureCmd.SetMaxHp(player.Creature, totalHealth).GetAwaiter().GetResult();
+            CreatureCmd.SetMaxHp(player.Creature, maxHealth).GetAwaiter().GetResult();
 
             foreach (var relic in player.Relics)
             {
@@ -42,7 +43,7 @@ internal class LoadRunPatch
         {
             foreach (var relic in player.Relics)
             {
-                if (!relic.IsMelted || (relic is LizardTail {WasUsed: false}))
+                if (!relic.IsMelted || (relic is LizardTail { WasUsed: false }))
                 {
                     PartyRelics.Add(relic);
                 }

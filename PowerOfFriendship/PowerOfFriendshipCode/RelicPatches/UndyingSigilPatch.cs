@@ -22,7 +22,7 @@ internal static class UndyingSigilPatch
         {
             return true;
         }
-        
+
         __result = dealer == null || !props.IsPoweredAttack() || dealer.IsPlayer
                    || dealer.CurrentHp > dealer.GetPowerAmount<DoomPower>()
             ? 1M
