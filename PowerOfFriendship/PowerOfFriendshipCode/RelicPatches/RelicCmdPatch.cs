@@ -10,7 +10,7 @@ namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
  * This Patch is used to keep track of the relics the party shares together
  */
 [HarmonyPatch(typeof(RelicCmd))]
-internal class RelicObtainPatch
+internal static class RelicObtainPatch
 {
     [HarmonyPatch(nameof(RelicCmd.Obtain), typeof(RelicModel), typeof(Player), typeof(int))]
     [HarmonyPostfix]

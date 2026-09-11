@@ -7,7 +7,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
 
 [HarmonyPatch(typeof(BeatingRemnant), nameof(BeatingRemnant.ModifyHpLostAfterOsty))]
-internal class BeatingRemnantPatch
+internal static class BeatingRemnantPatch
 {
     [HarmonyPrefix]
     private static bool ModifyHpLostAfterOstyPrefix(

@@ -8,7 +8,7 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
 
 [HarmonyPatch(typeof(UndyingSigil), nameof(UndyingSigil.ModifyDamageMultiplicative))]
-internal class UndyingSigilPatch
+internal static class UndyingSigilPatch
 {
     [HarmonyPrefix]
     private static bool Prefix(

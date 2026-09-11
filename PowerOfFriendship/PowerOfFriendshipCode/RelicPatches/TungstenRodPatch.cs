@@ -6,7 +6,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
 
 [HarmonyPatch(typeof(TungstenRod))]
-internal class TungstenRodPatch
+internal static class TungstenRodPatch
 {
     [HarmonyPatch(nameof(TungstenRod.ModifyHpLostAfterOsty))]
     [HarmonyPrefix]
