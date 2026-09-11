@@ -2,6 +2,7 @@ using Godot;
 
 using HarmonyLib;
 
+using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Modding;
 
 namespace PowerOfFriendship.PowerOfFriendshipCode;
@@ -10,13 +11,14 @@ namespace PowerOfFriendship.PowerOfFriendshipCode;
 [ModInitializer(nameof(Initialize))]
 public partial class PowerOfFriendship : Node
 {
-    public const string
+    private const string
         ModId = "PowerOfFriendship"; //At the moment, this is used only for the Logger and harmony names.
 
     public static MegaCrit.Sts2.Core.Logging.Logger Logger { get; } =
         new(ModId, MegaCrit.Sts2.Core.Logging.LogType.Generic);
 
-    public static int TotalPlayers { get; internal set; } = 1;
+    public static int TotalPlayers => Players.Count;
+    public static IReadOnlyList<Player> Players { get; internal set; } = [];
 
     public static void Initialize()
     {

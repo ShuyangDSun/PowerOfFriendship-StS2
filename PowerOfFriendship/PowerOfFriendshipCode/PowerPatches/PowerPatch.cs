@@ -114,6 +114,7 @@ internal static class PowerPatch
     ];
     private static readonly HashSet<Type> PlayerToPlayer = [
         typeof(DoomPower),
+        typeof(DiamondDiademPower)
     ];
     private static readonly HashSet<Type> EnemyToPlayer = [];
     private static readonly HashSet<Type> PlayerToEnemy = [];
@@ -140,6 +141,7 @@ internal static class PowerPatch
         typeof(BlurPower),
         typeof(TaintedPower),
         // typeof(DisintegrationPower),
+        typeof(DiamondDiademPower),
     ];
 
     internal static void Prefix(
