@@ -1,6 +1,7 @@
 using HarmonyLib;
 
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Models.Relics;
 using MegaCrit.Sts2.Core.Runs;
 
 using PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
@@ -15,7 +16,7 @@ internal class CreateNewRunPatch
     private static void Postfix(RunState __result)
     {
         // set total players to use in other patches
-        PowerOfFriendship.TotalPlayers = __result.Players.Count;
+        PowerOfFriendship.Players = __result.Players;
         var totalHealth = __result.Players.Sum(player => player.Creature.MaxHp);
 
         foreach (var player in __result.Players)
@@ -36,12 +37,15 @@ internal class LoadRunPatch
     [HarmonyPostfix]
     private static void Postfix(RunState __result)
     {
-        PowerOfFriendship.TotalPlayers = __result.Players.Count;
+        PowerOfFriendship.Players = __result.Players;
         foreach (var player in __result.Players)
         {
             foreach (var relic in player.Relics)
             {
-                PartyRelics.Add(relic);
+                if (!relic.IsMelted || (relic is LizardTail {WasUsed: false}))
+                {
+                    PartyRelics.Add(relic);
+                }
             }
         }
     }

@@ -8,8 +8,6 @@ internal static class PartyRelics
 
     private static bool HasRelic(Type relicType)
     {
-        PowerOfFriendship.Logger.Info("HAS RELIC:");
-        LogPartyRelics();
         HashSet<RelicModel>? relics = PartyRelicsDict.GetValueOrDefault(relicType);
         
         return relics?.Count > 0;
@@ -21,7 +19,7 @@ internal static class PartyRelics
         {
             return null;
         }
-        PowerOfFriendship.Logger.Info("GET RELIC:");
+        PowerOfFriendship.Logger.Info("GET RELIC: " + typeof(T));
         LogPartyRelics();
         HashSet<RelicModel>? relics = PartyRelicsDict.GetValueOrDefault(typeof(T));
         
@@ -36,7 +34,7 @@ internal static class PartyRelics
         }
         PartyRelicsDict[relic.GetType()].Add(relic);
         
-        PowerOfFriendship.Logger.Info("ADDING RELIC:");
+        PowerOfFriendship.Logger.Info("ADDING RELIC :" + relic.GetType());
         LogPartyRelics();
     }
 
@@ -54,7 +52,7 @@ internal static class PartyRelics
         {
             PartyRelicsDict.Remove(relic.GetType());
         }
-        PowerOfFriendship.Logger.Info("REMOVING RELIC:");
+        PowerOfFriendship.Logger.Info("REMOVING RELIC: " + relic.GetType());
         LogPartyRelics();
     }
 
