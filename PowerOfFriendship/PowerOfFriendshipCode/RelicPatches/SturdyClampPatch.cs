@@ -8,7 +8,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
 
 [HarmonyPatch(typeof(SturdyClamp))]
-internal class SturdyClampPatch
+internal static class SturdyClampPatch
 {
     [HarmonyPatch(nameof(SturdyClamp.ShouldClearBlock))]
     [HarmonyPostfix]

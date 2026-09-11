@@ -30,7 +30,7 @@ internal class PaperKranePatch
 
 // Patch Weak so that PaperKrane applies it's effect to all players
 [HarmonyPatch(typeof(WeakPower), nameof(WeakPower.ModifyDamageMultiplicative))]
-internal class WeakPowerPatch
+internal static class WeakPowerPatch
 {
     [HarmonyPostfix]
     private static void Postfix(

@@ -10,7 +10,7 @@ using MegaCrit.Sts2.Core.Models.Relics;
 namespace PowerOfFriendship.PowerOfFriendshipCode.RelicPatches;
 
 [HarmonyPatch(typeof(DiamondDiadem))]
-internal class DiamondDiademPatch
+internal static class DiamondDiademPatch
 {
     [HarmonyPatch(nameof(DiamondDiadem.AfterCardPlayed))]
     [HarmonyPrefix]

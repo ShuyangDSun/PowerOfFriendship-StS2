@@ -106,6 +106,9 @@ internal static class PowerPatch
     private static readonly HashSet<Type> FromCard = [
         typeof(DexterityPower),
         typeof(FrailPower),
+        typeof(NoBlockPower),
+        typeof(TheGambitPower),
+        typeof(WraithFormPower),
     ];
     private static readonly HashSet<Type> EnemyToEnemy = [
         typeof(StrengthPower),
@@ -114,7 +117,7 @@ internal static class PowerPatch
     ];
     private static readonly HashSet<Type> PlayerToPlayer = [
         typeof(DoomPower),
-        typeof(DiamondDiademPower)
+        typeof(DiamondDiademPower),
     ];
     private static readonly HashSet<Type> EnemyToPlayer = [];
     private static readonly HashSet<Type> PlayerToEnemy = [];
@@ -122,16 +125,10 @@ internal static class PowerPatch
     private static readonly HashSet<Type> ShouldNTimes = [
         typeof(StrengthPower),
         typeof(VigorPower),
-        // typeof(RitualPower),
-        // typeof(SuckPower),
         typeof(TerritorialPower),
         typeof(SteamEruptionPower),
-        // typeof(CrabRagePower),
-        // typeof(EnragePower),
-        // typeof(PainfulStabsPower),
     ];
     private static readonly HashSet<Type> ShouldBeShared = [
-        // typeof(NeurosurgePower),
         typeof(DoomPower),
         typeof(FrailPower),
         typeof(BarricadePower),
@@ -140,8 +137,11 @@ internal static class PowerPatch
         typeof(IntangiblePower),
         typeof(BlurPower),
         typeof(TaintedPower),
-        // typeof(DisintegrationPower),
         typeof(DiamondDiademPower),
+        
+        typeof(NoBlockPower),
+        typeof(TheGambitPower),
+        typeof(WraithFormPower),
     ];
 
     internal static void Prefix(

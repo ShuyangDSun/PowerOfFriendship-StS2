@@ -1,6 +1,6 @@
 namespace PowerOfFriendship.PowerOfFriendshipCode.Utils;
 
-internal class SuppressSharing
+internal static class SuppressSharing
 {
     private static readonly AsyncLocal<int> SuppressHealingDepth = new();
     private static readonly AsyncLocal<int> SuppressPowerDepth = new();
