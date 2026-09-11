@@ -29,7 +29,7 @@ internal static class AttackIntentPatch
         __result = PreloadManager.Cache.GetTexture2D(ImageHelper.GetImagePath("atlases/intent_atlas.sprites/attack/intent_attack_" + str + ".tres"));
         return false;
     }
-    
+
     [HarmonyPatch(nameof(AttackIntent.GetAnimation))]
     [HarmonyPostfix]
     private static void GetAnimation(
