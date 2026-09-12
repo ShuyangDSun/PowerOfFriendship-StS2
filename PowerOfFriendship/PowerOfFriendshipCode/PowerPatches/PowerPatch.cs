@@ -109,6 +109,7 @@ internal static class PowerPatch
         typeof(NoBlockPower),
         typeof(TheGambitPower),
         typeof(WraithFormPower),
+        typeof(ShadowmeldPower),
     ];
     private static readonly HashSet<Type> EnemyToEnemy = [
         typeof(StrengthPower),
@@ -142,6 +143,7 @@ internal static class PowerPatch
         typeof(NoBlockPower),
         typeof(TheGambitPower),
         typeof(WraithFormPower),
+        typeof(ShadowmeldPower),
     ];
 
     internal static void Prefix(
